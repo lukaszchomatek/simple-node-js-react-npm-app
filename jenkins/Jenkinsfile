@@ -29,13 +29,12 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
-        stage('Build and Push Docker Image') {
-            steps {
-                withDockerRegistry([url: "http://local-registry:5000", , credentialsId: '']) {
-                    script {
-                        def app = docker.build("my-app")
-                        app.push('latest')
-                    }
+        stage('Build image') {
+            app = docker.build("my-app")
+        }
+        stage('Push Docker Image') {
+            docker.withRegistry("http://local-registry:5000") {
+                    app.push('latest')
                 }
             }
         }
