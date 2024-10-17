@@ -36,7 +36,6 @@ pipeline {
             docker.withRegistry("http://local-registry:5000") {
                     app.push('latest')
                 }
-            }
         }
     }
 }
