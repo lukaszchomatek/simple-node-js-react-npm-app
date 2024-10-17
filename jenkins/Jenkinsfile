@@ -26,31 +26,13 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
-        stage('Build Image') {
-            agent {
-                docker {
-                    image 'docker:dind'
-                    args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
+        stage('Build and Push Docker Image') {
             steps {
-                script {
-                    def imageName = "localhost:5000/my-app:latest"
-                    sh "docker build -t ${imageName} ."
-                }
-            }
-        }
-        stage('Push to Local Registry') {
-            agent {
-                docker {
-                    image 'docker:dind'
-                    args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
-            steps {
-                script {
-                    def imageName = "localhost:5000/my-app:latest"
-                    sh "docker push ${imageName}"
+                withDockerRegistry([url: "http://local-registry:5000"]) {
+                    script {
+                        def app = docker.build("my-app")
+                        app.push('latest')
+                    }
                 }
             }
         }
