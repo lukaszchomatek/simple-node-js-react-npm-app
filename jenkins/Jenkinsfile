@@ -19,6 +19,22 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
+        stage('Build Image') {
+            steps {
+                script {
+                    def imageName = "localhost:5000/my-app:latest"
+                    sh "docker build -t ${imageName} ."
+                }
+            }
+        }
+        stage('Push to Local Registry') {
+            steps {
+                script {
+                    def imageName = "localhost:5000/my-app:latest"
+                    sh "docker push ${imageName}"
+                }
+            }
+        }
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
