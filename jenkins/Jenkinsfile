@@ -30,12 +30,16 @@ pipeline {
             }
         }
         stage('Build image') {
-            app = docker.build("my-app")
+            steps {
+                app = docker.build("my-app")
+            }
         }
         stage('Push Docker Image') {
+            steps {
             docker.withRegistry("http://local-registry:5000") {
                     app.push('latest')
                 }
+            }
         }
     }
 }
