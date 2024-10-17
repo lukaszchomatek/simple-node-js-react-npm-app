@@ -29,15 +29,11 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
-        stage('Build image') {
-            steps {
-                app = docker.build("my-ubuntu-base")
-            }
-        }
         stage('Build and Push Docker Image') {
             steps {
-                docker.withRegistry("http://local-registry:5000") {
+                withDockerRegistry(url: "http://local-registry:5000", credentialsId: '') {
                     script {
+                        def app = docker.build("my-app")
                         app.push('latest')
                     }
                 }
