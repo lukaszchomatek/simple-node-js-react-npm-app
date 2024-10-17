@@ -1,27 +1,18 @@
 pipeline {
-    agent none
+    agent any
     environment {
+        DOCKER_HOST = 'tcp://docker:2376'
+        DOCKER_CERT_PATH = '/certs/client'
+        DOCKER_TLS_VERIFY = '1'
         CI = 'true'
     }
     stages {
         stage('Build') {
-            agent {
-                docker {
-                    image 'node:lts-buster-slim'
-                    args '-p 3000:3000'
-                }
-            }
             steps {
                 sh 'npm install'
             }
         }
         stage('Test') {
-            agent {
-                docker {
-                    image 'node:lts-buster-slim'
-                    args '-p 3000:3000'
-                }
-            }
             steps {
                 sh './jenkins/scripts/test.sh'
             }
@@ -34,13 +25,6 @@ pipeline {
                         app.push('latest')
                     }
                 }
-            }
-        }
-        stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
             }
         }
     }
