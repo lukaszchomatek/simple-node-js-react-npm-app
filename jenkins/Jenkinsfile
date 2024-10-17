@@ -31,13 +31,15 @@ pipeline {
         }
         stage('Build image') {
             steps {
-                app = docker.build("my-app")
+                app = docker.build("my-ubuntu-base")
             }
         }
-        stage('Push Docker Image') {
+        stage('Build and Push Docker Image') {
             steps {
-            docker.withRegistry("http://local-registry:5000") {
-                    app.push('latest')
+                docker.withRegistry("http://local-registry:5000") {
+                    script {
+                        app.push('latest')
+                    }
                 }
             }
         }
