@@ -1,25 +1,38 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:lts-buster-slim'
-            args '-p 3000:3000'
-        }
-    }
+    agent none
     environment {
         CI = 'true'
     }
     stages {
         stage('Build') {
+            agent {
+                docker {
+                    image 'node:lts-buster-slim'
+                    args '-p 3000:3000'
+                }
+            }
             steps {
                 sh 'npm install'
             }
         }
         stage('Test') {
+            agent {
+                docker {
+                    image 'node:lts-buster-slim'
+                    args '-p 3000:3000'
+                }
+            }
             steps {
                 sh './jenkins/scripts/test.sh'
             }
         }
         stage('Build Image') {
+            agent {
+                docker {
+                    image 'docker:dind'
+                    args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 script {
                     def imageName = "localhost:5000/my-app:latest"
@@ -28,6 +41,12 @@ pipeline {
             }
         }
         stage('Push to Local Registry') {
+            agent {
+                docker {
+                    image 'docker:dind'
+                    args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 script {
                     def imageName = "localhost:5000/my-app:latest"
