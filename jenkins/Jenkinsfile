@@ -29,6 +29,11 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
+        stage('Sonar Present') {
+            steps {
+               sh 'ping -c 4 sonarqube'
+            }
+        }
         stage('SonarQube Analysis') {
             agent {
                 docker {
