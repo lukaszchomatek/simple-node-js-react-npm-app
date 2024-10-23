@@ -29,6 +29,24 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
+        stage('SonarQube Analysis') {
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli:latest'
+                    args '--network=jenkins'
+                }
+            }
+            steps {
+                sh '''
+                    sonar-scanner \
+                    -Dsonar.projectKey=my-app \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://sonarqube:9000 \
+                    -Dsonar.login=admin \
+                    -Dsonar.password=pm2022
+                '''
+            }
+        }
         stage('Build and Push Docker Image') {
             steps {
                 withDockerRegistry(url: "http://local-registry:5000", credentialsId: '') {
