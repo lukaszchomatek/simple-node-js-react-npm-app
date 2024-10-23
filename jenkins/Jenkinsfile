@@ -31,16 +31,19 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             environment {
-                SCANNER_HOME = tool 'SonarQube Scanner' // Name given in the Jenkins tool configuration
-                PATH = "${SCANNER_HOME}/bin:${env.PATH}" // Add scanner to the PATH
+                SCANNER_HOME = tool 'SonarQube Scanner' // Nazwa nadana w konfiguracji narzędzi w Jenkinsie
+                PATH = "${SCANNER_HOME}/bin:${env.PATH}" // Dodanie skanera do PATH
             }
             steps {
                 withSonarQubeEnv('sonar') {
-                    sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=my-app \
-                        -Dsonar.sources=.
-                    '''
+                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                        sh '''
+                            sonar-scanner \
+                            -Dsonar.projectKey=my-app \
+                            -Dsonar.sources=. \
+                            -Dsonar.login=$SONAR_TOKEN
+                        '''
+                    }
                 }
             }
         }
