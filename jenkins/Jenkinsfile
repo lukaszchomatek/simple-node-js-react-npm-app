@@ -30,20 +30,10 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-            agent {
-                docker {
-                    image 'sonarsource/sonar-scanner-cli:latest'
-                }
-            }
             steps {
-                sh '''
-                    sonar-scanner \
-                    -Dsonar.projectKey=my-app \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=http://host.docker.internal:9000 \
-                    -Dsonar.login=admin \
-                    -Dsonar.password=pm2022
-                '''
+                withSonarQubeEnv('sonar') {
+                    sh 'sonar-scanner -Dsonar.projectKey=my-app -Dsonar.sources=.'
+                }
             }
         }
         stage('Build and Push Docker Image') {
