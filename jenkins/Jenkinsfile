@@ -37,12 +37,15 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar') {
                     withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                        sh '''
-                            sonar-scanner \
-                            -Dsonar.projectKey=my-app \
-                            -Dsonar.sources=. \
-                            -Dsonar.login=$SONAR_TOKEN
-                        '''
+                        // Użycie NodeJS w ramach SonarQube Analysis
+                        nodejs(nodeJSInstallationName: 'node') {
+                            sh '''
+                                sonar-scanner \
+                                -Dsonar.projectKey=my-app \
+                                -Dsonar.sources=. \
+                                -Dsonar.login=$SONAR_TOKEN
+                            '''
+                        }
                     }
                 }
             }
