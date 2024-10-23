@@ -48,14 +48,12 @@ pipeline {
             }
         }
         stage('Build and Push Docker Image') {
-            steps {
-                withDockerRegistry(url: "http://local-registry:5000", credentialsId: '') {
-                script {
-                    def app = docker.build("local-registry:5000/my-app:latest")
-                    app.push('latest')
-                    }
-                }
+        steps {
+            script {
+                def app = docker.build("local-registry:5000/my-app:latest")
+                app.push()
             }
         }
+    }
     }
 }
