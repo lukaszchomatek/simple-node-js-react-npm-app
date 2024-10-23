@@ -30,9 +30,17 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
+            environment {
+                SCANNER_HOME = tool 'SonarQube Scanner' // Name given in the Jenkins tool configuration
+                PATH = "${SCANNER_HOME}/bin:${env.PATH}" // Add scanner to the PATH
+            }
             steps {
                 withSonarQubeEnv('sonar') {
-                    sh 'sonar-scanner -Dsonar.projectKey=my-app -Dsonar.sources=.'
+                    sh '''
+                        sonar-scanner \
+                        -Dsonar.projectKey=my-app \
+                        -Dsonar.sources=.
+                    '''
                 }
             }
         }
