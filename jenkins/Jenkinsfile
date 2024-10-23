@@ -33,7 +33,6 @@ pipeline {
             agent {
                 docker {
                     image 'sonarsource/sonar-scanner-cli:latest'
-                    args '--network=jenkins'
                 }
             }
             steps {
