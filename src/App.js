@@ -18,10 +18,4 @@ class App extends Component {
   }
 }
 
-const a = 5
-if (a)
-  console.log("foo")
-else
-  console.log("bar")
-
 export default App;
