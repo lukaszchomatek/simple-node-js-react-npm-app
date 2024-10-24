@@ -31,14 +31,14 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             environment {
-                SCANNER_HOME = tool 'SonarQube Scanner' // Nazwa nadana w konfiguracji narzędzi w Jenkinsie
+                SCANNER_HOME = tool 'SonarQube Scanner Demo' // Nazwa nadana w konfiguracji narzędzi w Jenkinsie
                 PATH = "${SCANNER_HOME}/bin:${env.PATH}" // Dodanie skanera do PATH
             }
             steps {
                 withSonarQubeEnv('sonar') {
-                    withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'demo-token', variable: 'SONAR_TOKEN')]) {
                         // Użycie NodeJS w ramach SonarQube Analysis
-                        nodejs(nodeJSInstallationName: 'node') {
+                        nodejs(nodeJSInstallationName: 'node-lecture') {
                             sh '''
                                 sonar-scanner \
                                 -Dsonar.projectKey=my-app \
